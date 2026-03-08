@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
+    <!-- Monetag Verification Tag Added Here -->
+    <meta name="monetag" content="8c13db186ee2f96168571cce9bae0767">
+    
+    <title>Watch Ads - Animated Red</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            
+            /* --- RED THEME COLORS --- */
+            --ad-theme-grad: linear-gradient(135deg, #ff4757, #ff6b81);
+            --ad-theme-color: #ff4757;
+            
+            /* --- STATS COLORS --- */
+            --col-green: #00b894;
+            --col-yellow: #f1c40f;
+            --col-blue: #0984e3;
+            --col-red: #e74c3c;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white; /* Initially White */
+            overflow-x: hidden; box-sizing: border-box;
+        }
+        *, *:before, *:after { box-sizing: inherit; }
+
+        .main-container {
+            max-width: 480px; margin: auto; min-height: 100vh;
+            background: #f4f7f6; display: flex; flex-direction: column; position: relative;
+            padding: 10px 0 20px 0;
+            opacity: 0; /* Hidden Initially */
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- SLIDE ANIMATIONS --- */
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .anim-right { animation: slideInRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .anim-left { animation: slideInLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .init-hidden { opacity: 0; }
+
+        .ad-container-center {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            padding: 0 15px; gap: 15px;
+        }
+
+        .banner-ad-container { width: 320px; height: 50px; display: none; background: transparent; z-index: 10; }
+        
+        /* --- AD CARD DESIGN --- */
+        .modern-ad-card {
+            position: relative; width: 100%; background: white; border-radius: 30px; 
+            padding: 0 20px; min-height: 480px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 10px;
+        }
+        
+        .modern-ad-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,71,87,0.1) 0%, rgba(255,255,255,0) 70%); z-index: 0;
+        }
+        
+        .ad-card-content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
+        .ad-logo-circle {
+            width: 90px; height: 90px; margin: 0; background: var(--ad-theme-grad);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); animation: float 3s ease-in-out infinite;
+        }
+        .ad-logo-circle .material-icons { font-size: 40px; color: white; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* Instructions */
+        .instruction-list { list-style: none; padding: 0; width: 100%; text-align: left; margin-top: 55px; margin-left: 5px; margin-bottom: 15px; }
+        .instruction-list li { position: relative; padding-left: 20px; margin-bottom: 12px; color: #636e72; font-size: 13px; font-weight: 600; }
+        .instruction-list li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; background-color: var(--ad-theme-color); border-radius: 50%; }
+
+        /* Note */
+        .ad-note {
+            font-size: 12px; color: #636e72; text-align: left; width: 100%; margin-left: 5px; margin-bottom: 30px; 
+            background: rgba(241, 242, 246, 0.5); padding: 10px; border-radius: 10px; border-left: 3px solid #d63031;
+        }
+
+        .modern-see-btn {
+            background: #2d3436; color: white; border: none; padding: 15px 40px; border-radius: 50px;
+            font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;
+            box-shadow: 0 8px 20px rgba(45, 52, 54, 0.3); transition: all 0.2s;
+        }
+        .modern-see-btn:active { transform: scale(0.95); }
+
+        /* --- STATS GRID --- */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 20px; }
+        .stat-box {
+            background: white; padding: 20px 15px; border-radius: 25px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;
+        }
+        .stat-val { font-size: 18px; font-weight: 800; color: #2d3436; }
+        .stat-label { font-size: 12px; color: #b2bec3; font-weight: 600; text-transform: uppercase; margin-top: 5px; }
+        
+        /* --- RING STRUCTURE --- */
+        .progress-container {
+            position: relative; width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 5px;
+        }
+        .progress-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); }
+        .progress-circle-bg { fill: none; stroke: #f0f0f0; stroke-width: 4; }
+        .progress-circle { 
+            fill: none; stroke-width: 4; stroke-linecap: butt;
+            stroke-dasharray: 125.6; stroke-dashoffset: 125.6; 
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        #ring-1 { stroke: var(--col-green); transform: rotate(0deg); transform-origin: center; }
+        #ring-2 { stroke: var(--col-yellow); transform: rotate(120deg); transform-origin: center; }
+        #ring-3 { stroke: var(--col-blue); transform: rotate(240deg); transform-origin: center; }
+        #anim-overlay { stroke-width: 4; stroke-linecap: butt; fill: none; opacity: 0; transform-origin: center; }
+
+        /* --- SPECIAL ANIMATIONS --- */
+        /* LOAD ANIMATION */
+        .anim-load-start {
+            animation: fillAndEmpty 1.5s ease-in-out forwards; opacity: 1 !important; stroke: #00b894;
+        }
+        @keyframes fillAndEmpty {
+            0% { stroke-dashoffset: 125.6; } 40% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 125.6; }
+        }
+
+        /* Task Animations */
+        .anim-expand-full { animation: expandAndBackFull 1.2s ease-in-out forwards; opacity: 1 !important; }
+        @keyframes expandAndBackFull { 0% { stroke-dashoffset: 83.7; } 40% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 83.7; } }
+        .anim-fill-gap { animation: fillBlueGap 1.2s ease-in-out forwards; opacity: 1 !important; }
+        @keyframes fillBlueGap { 0% { stroke-dashoffset: 125.6; } 40% { stroke-dashoffset: 83.7; } 60% { stroke-dashoffset: 83.7; } 100% { stroke-dashoffset: 125.6; } }
+
+        /* Gaps */
+        .gap-marker { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; display: none; }
+        .gap-marker::after { content: ''; position: absolute; left: 50%; top: -2px; width: 4px; height: 8px; background: white; transform: translateX(-50%); transition: background 0.3s; }
+        .gap-1 { transform: rotate(120deg); }
+        .gap-2 { transform: rotate(240deg); }
+        .animating-now .gap-marker { display: none !important; }
+
+        .limit-reached #ring-1, .limit-reached #ring-2, .limit-reached #ring-3 { stroke: var(--col-red) !important; transition: stroke 0.3s; }
+        .limit-reached .gap-marker::after { background: var(--col-red) !important; }
+        .pulse-heartbeat { animation: heartBeatAnim 1s infinite alternate; }
+        @keyframes heartBeatAnim { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+        .progress-icon-inner { position: absolute; color: #b2bec3; transition: color 0.3s; z-index: 6;}
+        .color-status { color: #00b894; }
+        .color-rate { color: #0984e3; }
+        .color-balance { color: #6c5ce7; font-size: 20px; }
+
+        /* Live Ticker */
+        #live-ticker-container { position: relative; width: 100%; height: 40px; display: flex; justify-content: center; overflow: hidden; z-index: 900; margin-top: auto; }
+        .ticker-item {
+            position: absolute; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.05);
+            padding: 8px 20px; border-radius: 30px; font-size: 13px; color: #555;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 5px;
+            animation: textFlyCycle 2.5s ease-in-out forwards;
+        }
+        @keyframes textFlyCycle { 0% { transform: translateY(30px); opacity: 0; } 20% { transform: translateY(0); opacity: 1; } 80% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+        .highlight-name { color: var(--ad-theme-color); font-weight: 800; }
+
+        /* Toast */
+        #notification-container { position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1000; pointer-events: none; }
+        .toast-msg {
+            background: rgba(30, 30, 30, 0.9); color: #fff; padding: 10px 20px; border-radius: 50px;
+            margin-top: -45px; opacity: 0; animation: appearBottom 0.4s forwards; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;
+        }
+        @keyframes appearBottom { to { opacity: 1; transform: translateY(0); margin-top: 10px; } }
+        .toast-fly-up { animation: flyUpAndGone 0.3s ease-in forwards !important; }
+        @keyframes flyUpAndGone { to { opacity: 0; transform: translateY(-30px); margin-top: -45px; } }
+
+        /* Popup */
+        .popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 9999; justify-content: center; align-items: center; padding: 20px;
+        }
+        .popup-box {
+            background: white; width: 100%; max-width: 300px; padding: 30px;
+            border-radius: 20px; text-align: center; animation: popIn 0.3s;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1); position: relative;
+        }
+        .popup-close-btn {
+            position: absolute; top: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%;
+            background: #f1f2f6; color: #636e72; display: none; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+        .show-close-btn { display: flex !important; animation: popBtn 0.5s forwards; }
+        @keyframes popBtn { 0% { transform: scale(0) rotate(-90deg); } 100% { transform: scale(1) rotate(0); } }
+        @keyframes popIn { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
+        
+        .popup-icon-circle { width: 60px; height: 60px; background: #ffeaa7; color:#fdcb6e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
+        .warning-icon { background: #ffcccc; color: #d63031; }
+        .popup-btn-close-action { margin-top: 20px; padding: 10px 25px; border-radius: 25px; border: none; background: #d63031; color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container" id="main-content">
+        <div class="ad-container-center">
+            
+            <div id="top-banner-ad" class="banner-ad-container">
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '5fb3cc2f25c7a10e6ee246a899c149c8',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
+                </script>
+                <script type="text/javascript" src="https://www.highperformanceformat.com/5fb3cc2f25c7a10e6ee246a899c149c8/invoke.js"></script>
+            </div>
+
+            <!-- AD BOX (Slides Right) -->
+            <div class="modern-ad-card init-hidden" id="main-ad-card">
+                <div class="ad-card-content">
+                    <div class="ad-logo-circle"><span class="material-icons">smart_display</span></div>
+                    
+                    <ul class="instruction-list">
+                        <li>Click <b>WATCH</b> to start.</li>
+                        <li>Watch the full video.</li>
+                        <li>Close ad after finishing.</li>
+                        <li>Reward added automatically.</li>
+                    </ul>
+
+                    <div class="ad-note">
+                        <span style="color: #d63031; font-weight: 800;">Note:</span>
+                        Stay on the phone. Private DNS If you have AdGuard installed, be sure to turn it off.
+                    </div>
+
+                    <button class="modern-see-btn" onclick="watchAdLogic(this)">WATCH</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <!-- Status (Slides Left) -->
+                <div class="stat-box init-hidden" id="box-status">
+                    <div style="margin-bottom:8px;"><span class="material-icons color-status" id="status-icon" style="font-size:30px;">verified</span></div>
+                    <span class="stat-val color-status" id="status-text">Active</span>
+                    <span class="stat-label">Status</span>
+                </div>
+                
+                <!-- Limit (Slides Right) -->
+                <div class="stat-box init-hidden" id="box-limit">
+                    <div class="progress-container" id="limit-progress-container">
+                        <svg class="progress-svg" viewBox="0 0 50 50">
+                            <circle class="progress-circle-bg" cx="25" cy="25" r="20"></circle>
+                            <circle class="progress-circle" id="ring-1" cx="25" cy="25" r="20"></circle>
+                            <circle class="progress-circle" id="ring-2" cx="25" cy="25" r="20"></circle>
+                            <circle class="progress-circle" id="ring-3" cx="25" cy="25" r="20"></circle>
+                            <circle class="progress-circle" id="anim-overlay" cx="25" cy="25" r="20"></circle>
+                        </svg>
+                        <div class="gap-marker gap-1" id="gap-1"></div>
+                        <div class="gap-marker gap-2" id="gap-2"></div>
+                        <div class="progress-icon-inner" id="limit-icon-inner">
+                            <span class="material-icons" style="font-size:24px;">timelapse</span>
+                        </div>
+                    </div>
+                    <span class="stat-val" id="limit-display">0 / 30</span>
+                    <span class="stat-label">Today Limit</span>
+                </div>
+
+                <!-- Per Ads (Slides Left) -->
+                <div class="stat-box init-hidden" id="box-rate">
+                    <div style="margin-bottom:8px;"><span class="material-icons color-rate" style="font-size:30px;">sell</span></div>
+                    <span class="stat-val">25</span>
+                    <span class="stat-label">Per Ads Coin</span>
+                </div>
+
+                <!-- Balance (Slides Right) -->
+                <div class="stat-box init-hidden" id="box-balance">
+                    <div style="margin-bottom:8px;"><span class="material-icons color-balance" style="font-size:30px;">account_balance_wallet</span></div>
+                    <span class="stat-val color-balance" id="balance-display">0</span>
+                    <span class="stat-label">Balance</span>
+                </div>
+            </div>
+
+            <div id="live-ticker-container"></div>
+        </div>
+        
+        <div id="notification-container"></div>
+    </div>
+
+    <!-- Instruction Popup -->
+    <div class="popup-overlay" id="instruction-popup">
+        <div class="popup-box">
+            <div class="popup-close-btn" id="close-instruction-btn" onclick="closeInstructionPopup()">
+                <span class="material-icons" style="font-size: 20px;">close</span>
+            </div>
+            <div class="popup-icon-circle">
+                <span class="material-icons" style="font-size: 30px;">info</span>
+            </div>
+            <h3 id="popup-title" style="margin: 0 0 10px 0;">Instruction</h3>
+            <p id="popup-msg" style="color:#666; font-size:13px; line-height:1.5;">Please watch the video completely to earn rewards.</p>
+            <div style="margin-top:20px; font-weight:bold; color:#888; font-size:14px;" id="timer-container">
+                Wait <span id="timer-count" style="color:#00b894;">5</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- WARNING POPUP -->
+    <div class="popup-overlay" id="warning-popup">
+        <div class="popup-box">
+            <div class="popup-icon-circle warning-icon">
+                <span class="material-icons" style="font-size: 30px;">gpp_bad</span>
+            </div>
+            <h3 style="margin: 0 0 10px 0; color: #d63031;">Opps! Limit Over</h3>
+            <p style="color:#666; font-size:13px; line-height:1.5;">Daily limit reached!</p>
+            <button class="popup-btn-close-action" onclick="closeWarning()">Okay</button>
+        </div>
+    </div>
+
+    <script>
+        let totalAdsWatched = 0;
+        let currentBalance = 0;
+        const dailyLimit = 30;
+        const rewardPerAd = 25;
+        let tickerInterval;
+        const userNames = ["Rahim", "Karim", "Sami", "Tuhin", "Biplob", "Shakil"];
+        const earnAmounts = ["25", "25", "25"];
+
+        // Config for Rings
+        const ring1 = document.getElementById('ring-1');
+        const ring2 = document.getElementById('ring-2');
+        const ring3 = document.getElementById('ring-3');
+        const animOverlay = document.getElementById('anim-overlay');
+        const gap1 = document.getElementById('gap-1');
+        const gap2 = document.getElementById('gap-2');
+        const progressContainer = document.getElementById('limit-progress-container');
+        const iconInner = document.getElementById('limit-icon-inner');
+        const statusText = document.getElementById('status-text');
+        const statusIcon = document.getElementById('status-icon');
+        const radius = ring1.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius; 
+        
+        function initRings() {
+            [ring1, ring2, ring3, animOverlay].forEach(r => {
+                r.style.strokeDasharray = `${circumference} ${circumference}`;
+                r.style.strokeDashoffset = circumference;
+            });
+        }
+        initRings();
+
+        window.onload = function() {
+            showPopup();
+        };
+
+        // --- POPUP & ENTRY LOGIC ---
+        function showPopup() {
+            const popup = document.getElementById('instruction-popup');
+            const closeBtn = document.getElementById('close-instruction-btn');
+            const timerContainer = document.getElementById('timer-container');
+            const timerCount = document.getElementById('timer-count');
+            
+            popup.style.display = 'flex'; 
+            
+            let time = 5;
+            timerCount.innerText = time;
+            
+            let interval = setInterval(() => {
+                time--;
+                timerCount.innerText = time;
+                if(time <= 0) {
+                    clearInterval(interval);
+                    closeBtn.classList.add('show-close-btn');
+                    timerContainer.style.visibility = 'hidden';
+                }
+            }, 1000);
+        }
+
+        function closeInstructionPopup() {
+            // 1. Close
+            document.getElementById('instruction-popup').style.display = 'none';
+            // 2. Reveal
+            document.getElementById('main-content').style.opacity = '1';
+            // 3. Slide In
+            document.getElementById('main-ad-card').classList.add('anim-right');
+            document.getElementById('box-limit').classList.add('anim-right');
+            document.getElementById('box-balance').classList.add('anim-right');
+            document.getElementById('box-status').classList.add('anim-left');
+            document.getElementById('box-rate').classList.add('anim-left');
+
+            // 4. *** LOAD ANIMATION ***
+            const overlay = document.getElementById('anim-overlay');
+            overlay.classList.add('anim-load-start'); 
+
+            // 5. Cleanup & Start Ticker
+            setTimeout(() => {
+                overlay.classList.remove('anim-load-start');
+                updateUI();
+                document.getElementById('top-banner-ad').style.display = 'block';
+                startLiveTicker();
+            }, 1500);
+        }
+
+        // --- PROGRESS LOGIC ---
+        function runAnimation(color, type) {
+            animOverlay.style.stroke = color;
+            animOverlay.classList.remove('anim-expand-full', 'anim-fill-gap', 'anim-load-start');
+            let rotation = 0; 
+            if (type === 'gap-fill') rotation = 240; 
+            animOverlay.style.transform = `rotate(${rotation}deg)`;
+            progressContainer.classList.add('animating-now');
+            void animOverlay.offsetWidth;
+            if (type === 'gap-fill') animOverlay.classList.add('anim-fill-gap');
+            else animOverlay.classList.add('anim-expand-full');
+            setTimeout(() => {
+                progressContainer.classList.remove('animating-now');
+                animOverlay.classList.remove('anim-expand-full', 'anim-fill-gap');
+            }, 1200);
+        }
+
+        function setProgress(count) {
+            progressContainer.classList.remove('limit-reached', 'pulse-heartbeat');
+            if (count >= 30) {
+                statusText.innerText = "Inactive";
+                statusText.style.color = "var(--col-red)";
+                statusIcon.style.color = "var(--col-red)";
+                statusIcon.innerText = "highlight_off"; 
+            } else {
+                statusText.innerText = "Active";
+                statusText.style.color = "var(--col-green)";
+                statusIcon.style.color = "var(--col-green)";
+                statusIcon.innerText = "verified";
+            }
+            
+            // Ring 1
+            let c1 = Math.min(count, 10);
+            let p1 = c1 / 10; 
+            ring1.style.strokeDashoffset = circumference - (p1 * (circumference / 3));
+
+            // Ring 2
+            let c2 = Math.min(Math.max(count - 10, 0), 10);
+            let p2 = c2 / 10;
+            ring2.style.strokeDashoffset = circumference - (p2 * (circumference / 3));
+            gap1.style.display = (count > 10) ? 'block' : 'none';
+
+            // Ring 3
+            let c3 = Math.min(Math.max(count - 20, 0), 10);
+            let p3 = c3 / 10;
+            ring3.style.strokeDashoffset = circumference - (p3 * (circumference / 3));
+            gap2.style.display = (count > 20) ? 'block' : 'none';
+
+            if (count >= 30) {
+                progressContainer.classList.add('limit-reached', 'pulse-heartbeat');
+                iconInner.style.color = 'var(--col-red)';
+            } else {
+                iconInner.style.color = '#b2bec3';
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('limit-display').innerText = `${totalAdsWatched} / ${dailyLimit}`;
+            document.getElementById('balance-display').innerText = currentBalance;
+            setProgress(totalAdsWatched);
+        }
+
+        function showWarningPopup() { document.getElementById('warning-popup').style.display = 'flex'; }
+        function closeWarning() { document.getElementById('warning-popup').style.display = 'none'; }
+
+        function watchAdLogic(btn) {
+            if (totalAdsWatched >= dailyLimit) { showWarningPopup(); return; }
+            
+            btn.innerHTML = "Checking...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true; 
+            setTimeout(() => {
+                totalAdsWatched++;
+                currentBalance += rewardPerAd;
+                updateUI();
+                
+                // Special Effects
+                if (totalAdsWatched === 10) runAnimation('var(--col-green)', 'full');
+                if (totalAdsWatched === 20) runAnimation('var(--col-yellow)', 'gap-fill');
+                if (totalAdsWatched === 30) runAnimation('var(--col-red)', 'full');
+
+                showNotification();
+                btn.innerHTML = "WATCH";
+                btn.style.opacity = "1";
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        function showNotification() {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-msg';
+            toast.innerHTML = `<span class="material-icons" style="color:#FFC107;">check_circle</span> +25 Coins Added`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('toast-fly-up');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 2500);
+        }
+
+        function startLiveTicker() {
+            if(tickerInterval) clearInterval(tickerInterval);
+            showSingleTickerItem();
+            tickerInterval = setInterval(showSingleTickerItem, 3000);
+        }
+
+        function showSingleTickerItem() {
+            const container = document.getElementById('live-ticker-container');
+            const name = userNames[Math.floor(Math.random() * userNames.length)];
+            const amount = earnAmounts[Math.floor(Math.random() * earnAmounts.length)];
+            container.innerHTML = '';
+            const item = document.createElement('div');
+            item.className = 'ticker-item';
+            item.innerHTML = `<span class="highlight-name">${name}</span> earned ${amount} coins`;
+            container.appendChild(item);
+        }
+    </script>
+</body>
+</html>
