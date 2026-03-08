@@ -3,150 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    
-    <!-- Monetag Verification Tag Added Here -->
-    <meta name="monetag" content="8c13db186ee2f96168571cce9bae0767">
-    
     <title>Watch Ads - Animated Red</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <style>
         :root {
             --bg-color: #f4f7f6;
-            
-            /* --- RED THEME COLORS --- */
             --ad-theme-grad: linear-gradient(135deg, #ff4757, #ff6b81);
             --ad-theme-color: #ff4757;
-            
-            /* --- STATS COLORS --- */
             --col-green: #00b894;
             --col-yellow: #f1c40f;
             --col-blue: #0984e3;
             --col-red: #e74c3c;
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: white; /* Initially White */
-            overflow-x: hidden; box-sizing: border-box;
-        }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background-color: white; overflow-x: hidden; box-sizing: border-box; }
         *, *:before, *:after { box-sizing: inherit; }
 
-        .main-container {
-            max-width: 480px; margin: auto; min-height: 100vh;
-            background: #f4f7f6; display: flex; flex-direction: column; position: relative;
-            padding: 10px 0 20px 0;
-            opacity: 0; /* Hidden Initially */
-            transition: opacity 0.5s ease;
-        }
-
-        /* --- SLIDE ANIMATIONS --- */
-        @keyframes slideInRight {
-            0% { transform: translateX(100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideInLeft {
-            0% { transform: translateX(-100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-
+        .main-container { max-width: 480px; margin: auto; min-height: 100vh; background: #f4f7f6; display: flex; flex-direction: column; position: relative; padding: 10px 0 20px 0; opacity: 0; transition: opacity 0.5s ease; }
+        
+        @keyframes slideInRight { 0% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes slideInLeft { 0% { transform: translateX(-100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
         .anim-right { animation: slideInRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .anim-left { animation: slideInLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .init-hidden { opacity: 0; }
 
-        .ad-container-center {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            padding: 0 15px; gap: 15px;
-        }
-
+        .ad-container-center { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 15px; gap: 15px; }
         .banner-ad-container { width: 320px; height: 50px; display: none; background: transparent; z-index: 10; }
         
-        /* --- AD CARD DESIGN --- */
-        .modern-ad-card {
-            position: relative; width: 100%; background: white; border-radius: 30px; 
-            padding: 0 20px; min-height: 480px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 10px;
-        }
-        
-        .modern-ad-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,71,87,0.1) 0%, rgba(255,255,255,0) 70%); z-index: 0;
-        }
-        
+        .modern-ad-card { position: relative; width: 100%; background: white; border-radius: 30px; padding: 0 20px; min-height: 480px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 20px 50px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 10px; }
+        .modern-ad-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,71,87,0.1) 0%, rgba(255,255,255,0) 70%); z-index: 0; }
         .ad-card-content { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
         
-        .ad-logo-circle {
-            width: 90px; height: 90px; margin: 0; background: var(--ad-theme-grad);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); animation: float 3s ease-in-out infinite;
-        }
+        .ad-logo-circle { width: 90px; height: 90px; margin: 0; background: var(--ad-theme-grad); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4); animation: float 3s ease-in-out infinite; }
         .ad-logo-circle .material-icons { font-size: 40px; color: white; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         
-        /* Instructions */
         .instruction-list { list-style: none; padding: 0; width: 100%; text-align: left; margin-top: 55px; margin-left: 5px; margin-bottom: 15px; }
         .instruction-list li { position: relative; padding-left: 20px; margin-bottom: 12px; color: #636e72; font-size: 13px; font-weight: 600; }
         .instruction-list li::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; background-color: var(--ad-theme-color); border-radius: 50%; }
 
-        /* Note */
-        .ad-note {
-            font-size: 12px; color: #636e72; text-align: left; width: 100%; margin-left: 5px; margin-bottom: 30px; 
-            background: rgba(241, 242, 246, 0.5); padding: 10px; border-radius: 10px; border-left: 3px solid #d63031;
-        }
+        .ad-note { font-size: 12px; color: #636e72; text-align: left; width: 100%; margin-left: 5px; margin-bottom: 30px; background: rgba(241, 242, 246, 0.5); padding: 10px; border-radius: 10px; border-left: 3px solid #d63031; }
 
-        .modern-see-btn {
-            background: #2d3436; color: white; border: none; padding: 15px 40px; border-radius: 50px;
-            font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;
-            box-shadow: 0 8px 20px rgba(45, 52, 54, 0.3); transition: all 0.2s;
-        }
+        .modern-see-btn { background: #2d3436; color: white; border: none; padding: 15px 40px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 8px 20px rgba(45, 52, 54, 0.3); transition: all 0.2s; }
         .modern-see-btn:active { transform: scale(0.95); }
+        .modern-see-btn:disabled { background: #b2bec3; cursor: not-allowed; transform: none; }
 
-        /* --- STATS GRID --- */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 20px; }
-        .stat-box {
-            background: white; padding: 20px 15px; border-radius: 25px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;
-        }
+        .stat-box { background: white; padding: 20px 15px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
         .stat-val { font-size: 18px; font-weight: 800; color: #2d3436; }
         .stat-label { font-size: 12px; color: #b2bec3; font-weight: 600; text-transform: uppercase; margin-top: 5px; }
         
-        /* --- RING STRUCTURE --- */
-        .progress-container {
-            position: relative; width: 50px; height: 50px;
-            display: flex; align-items: center; justify-content: center; margin-bottom: 5px;
-        }
+        .progress-container { position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
         .progress-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; transform: rotate(-90deg); }
         .progress-circle-bg { fill: none; stroke: #f0f0f0; stroke-width: 4; }
-        .progress-circle { 
-            fill: none; stroke-width: 4; stroke-linecap: butt;
-            stroke-dasharray: 125.6; stroke-dashoffset: 125.6; 
-            transition: stroke-dashoffset 0.5s ease;
-        }
+        .progress-circle { fill: none; stroke-width: 4; stroke-linecap: butt; stroke-dasharray: 125.6; stroke-dashoffset: 125.6; transition: stroke-dashoffset 0.5s ease; }
 
         #ring-1 { stroke: var(--col-green); transform: rotate(0deg); transform-origin: center; }
         #ring-2 { stroke: var(--col-yellow); transform: rotate(120deg); transform-origin: center; }
         #ring-3 { stroke: var(--col-blue); transform: rotate(240deg); transform-origin: center; }
         #anim-overlay { stroke-width: 4; stroke-linecap: butt; fill: none; opacity: 0; transform-origin: center; }
 
-        /* --- SPECIAL ANIMATIONS --- */
-        /* LOAD ANIMATION */
-        .anim-load-start {
-            animation: fillAndEmpty 1.5s ease-in-out forwards; opacity: 1 !important; stroke: #00b894;
-        }
-        @keyframes fillAndEmpty {
-            0% { stroke-dashoffset: 125.6; } 40% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 125.6; }
-        }
+        .anim-load-start { animation: fillAndEmpty 1.5s ease-in-out forwards; opacity: 1 !important; stroke: #00b894; }
+        @keyframes fillAndEmpty { 0% { stroke-dashoffset: 125.6; } 40% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 125.6; } }
 
-        /* Task Animations */
         .anim-expand-full { animation: expandAndBackFull 1.2s ease-in-out forwards; opacity: 1 !important; }
         @keyframes expandAndBackFull { 0% { stroke-dashoffset: 83.7; } 40% { stroke-dashoffset: 0; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 83.7; } }
         .anim-fill-gap { animation: fillBlueGap 1.2s ease-in-out forwards; opacity: 1 !important; }
         @keyframes fillBlueGap { 0% { stroke-dashoffset: 125.6; } 40% { stroke-dashoffset: 83.7; } 60% { stroke-dashoffset: 83.7; } 100% { stroke-dashoffset: 125.6; } }
 
-        /* Gaps */
         .gap-marker { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; display: none; }
         .gap-marker::after { content: ''; position: absolute; left: 50%; top: -2px; width: 4px; height: 8px; background: white; transform: translateX(-50%); transition: background 0.3s; }
         .gap-1 { transform: rotate(120deg); }
@@ -163,42 +88,20 @@
         .color-rate { color: #0984e3; }
         .color-balance { color: #6c5ce7; font-size: 20px; }
 
-        /* Live Ticker */
         #live-ticker-container { position: relative; width: 100%; height: 40px; display: flex; justify-content: center; overflow: hidden; z-index: 900; margin-top: auto; }
-        .ticker-item {
-            position: absolute; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.05);
-            padding: 8px 20px; border-radius: 30px; font-size: 13px; color: #555;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 5px;
-            animation: textFlyCycle 2.5s ease-in-out forwards;
-        }
+        .ticker-item { position: absolute; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.05); padding: 8px 20px; border-radius: 30px; font-size: 13px; color: #555; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 5px; animation: textFlyCycle 2.5s ease-in-out forwards; }
         @keyframes textFlyCycle { 0% { transform: translateY(30px); opacity: 0; } 20% { transform: translateY(0); opacity: 1; } 80% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
         .highlight-name { color: var(--ad-theme-color); font-weight: 800; }
 
-        /* Toast */
         #notification-container { position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1000; pointer-events: none; }
-        .toast-msg {
-            background: rgba(30, 30, 30, 0.9); color: #fff; padding: 10px 20px; border-radius: 50px;
-            margin-top: -45px; opacity: 0; animation: appearBottom 0.4s forwards; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;
-        }
+        .toast-msg { background: rgba(30, 30, 30, 0.9); color: #fff; padding: 10px 20px; border-radius: 50px; margin-top: -45px; opacity: 0; animation: appearBottom 0.4s forwards; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; }
         @keyframes appearBottom { to { opacity: 1; transform: translateY(0); margin-top: 10px; } }
         .toast-fly-up { animation: flyUpAndGone 0.3s ease-in forwards !important; }
         @keyframes flyUpAndGone { to { opacity: 0; transform: translateY(-30px); margin-top: -45px; } }
 
-        /* Popup */
-        .popup-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999; justify-content: center; align-items: center; padding: 20px;
-        }
-        .popup-box {
-            background: white; width: 100%; max-width: 300px; padding: 30px;
-            border-radius: 20px; text-align: center; animation: popIn 0.3s;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.1); position: relative;
-        }
-        .popup-close-btn {
-            position: absolute; top: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%;
-            background: #f1f2f6; color: #636e72; display: none; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
-        }
+        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .popup-box { background: white; width: 100%; max-width: 300px; padding: 30px; border-radius: 20px; text-align: center; animation: popIn 0.3s; box-shadow: 0 15px 50px rgba(0,0,0,0.1); position: relative; }
+        .popup-close-btn { position: absolute; top: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%; background: #f1f2f6; color: #636e72; display: none; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .show-close-btn { display: flex !important; animation: popBtn 0.5s forwards; }
         @keyframes popBtn { 0% { transform: scale(0) rotate(-90deg); } 100% { transform: scale(1) rotate(0); } }
         @keyframes popIn { from {transform: scale(0.8); opacity:0;} to {transform: scale(1); opacity:1;} }
@@ -226,7 +129,7 @@
                 <script type="text/javascript" src="https://www.highperformanceformat.com/5fb3cc2f25c7a10e6ee246a899c149c8/invoke.js"></script>
             </div>
 
-            <!-- AD BOX (Slides Right) -->
+            <!-- AD BOX -->
             <div class="modern-ad-card init-hidden" id="main-ad-card">
                 <div class="ad-card-content">
                     <div class="ad-logo-circle"><span class="material-icons">smart_display</span></div>
@@ -240,7 +143,7 @@
 
                     <div class="ad-note">
                         <span style="color: #d63031; font-weight: 800;">Note:</span>
-                        Stay on the phone. Private DNS If you have AdGuard installed, be sure to turn it off.
+                        Stay on the phone. Turn off AdGuard if installed.
                     </div>
 
                     <button class="modern-see-btn" onclick="watchAdLogic(this)">WATCH</button>
@@ -248,14 +151,14 @@
             </div>
 
             <div class="stats-grid">
-                <!-- Status (Slides Left) -->
+                <!-- Status -->
                 <div class="stat-box init-hidden" id="box-status">
                     <div style="margin-bottom:8px;"><span class="material-icons color-status" id="status-icon" style="font-size:30px;">verified</span></div>
                     <span class="stat-val color-status" id="status-text">Active</span>
                     <span class="stat-label">Status</span>
                 </div>
                 
-                <!-- Limit (Slides Right) -->
+                <!-- Limit -->
                 <div class="stat-box init-hidden" id="box-limit">
                     <div class="progress-container" id="limit-progress-container">
                         <svg class="progress-svg" viewBox="0 0 50 50">
@@ -275,14 +178,14 @@
                     <span class="stat-label">Today Limit</span>
                 </div>
 
-                <!-- Per Ads (Slides Left) -->
+                <!-- Per Ads -->
                 <div class="stat-box init-hidden" id="box-rate">
                     <div style="margin-bottom:8px;"><span class="material-icons color-rate" style="font-size:30px;">sell</span></div>
                     <span class="stat-val">25</span>
                     <span class="stat-label">Per Ads Coin</span>
                 </div>
 
-                <!-- Balance (Slides Right) -->
+                <!-- Balance -->
                 <div class="stat-box init-hidden" id="box-balance">
                     <div style="margin-bottom:8px;"><span class="material-icons color-balance" style="font-size:30px;">account_balance_wallet</span></div>
                     <span class="stat-val color-balance" id="balance-display">0</span>
@@ -325,6 +228,9 @@
         </div>
     </div>
 
+    <!-- MONETAG SDK CODE ADDED HERE -->
+    <script src='//libtl.com/sdk.js' data-zone='10697065' data-sdk='show_10697065'></script>
+
     <script>
         let totalAdsWatched = 0;
         let currentBalance = 0;
@@ -360,7 +266,6 @@
             showPopup();
         };
 
-        // --- POPUP & ENTRY LOGIC ---
         function showPopup() {
             const popup = document.getElementById('instruction-popup');
             const closeBtn = document.getElementById('close-instruction-btn');
@@ -384,22 +289,17 @@
         }
 
         function closeInstructionPopup() {
-            // 1. Close
             document.getElementById('instruction-popup').style.display = 'none';
-            // 2. Reveal
             document.getElementById('main-content').style.opacity = '1';
-            // 3. Slide In
             document.getElementById('main-ad-card').classList.add('anim-right');
             document.getElementById('box-limit').classList.add('anim-right');
             document.getElementById('box-balance').classList.add('anim-right');
             document.getElementById('box-status').classList.add('anim-left');
             document.getElementById('box-rate').classList.add('anim-left');
 
-            // 4. *** LOAD ANIMATION ***
             const overlay = document.getElementById('anim-overlay');
             overlay.classList.add('anim-load-start'); 
 
-            // 5. Cleanup & Start Ticker
             setTimeout(() => {
                 overlay.classList.remove('anim-load-start');
                 updateUI();
@@ -408,7 +308,6 @@
             }, 1500);
         }
 
-        // --- PROGRESS LOGIC ---
         function runAnimation(color, type) {
             animOverlay.style.stroke = color;
             animOverlay.classList.remove('anim-expand-full', 'anim-fill-gap', 'anim-load-start');
@@ -439,18 +338,15 @@
                 statusIcon.innerText = "verified";
             }
             
-            // Ring 1
             let c1 = Math.min(count, 10);
             let p1 = c1 / 10; 
             ring1.style.strokeDashoffset = circumference - (p1 * (circumference / 3));
 
-            // Ring 2
             let c2 = Math.min(Math.max(count - 10, 0), 10);
             let p2 = c2 / 10;
             ring2.style.strokeDashoffset = circumference - (p2 * (circumference / 3));
             gap1.style.display = (count > 10) ? 'block' : 'none';
 
-            // Ring 3
             let c3 = Math.min(Math.max(count - 20, 0), 10);
             let p3 = c3 / 10;
             ring3.style.strokeDashoffset = circumference - (p3 * (circumference / 3));
@@ -473,27 +369,51 @@
         function showWarningPopup() { document.getElementById('warning-popup').style.display = 'flex'; }
         function closeWarning() { document.getElementById('warning-popup').style.display = 'none'; }
 
+        // --- UPDATED WATCH LOGIC FOR MONETAG ---
         function watchAdLogic(btn) {
+            // 1. Check Limit
             if (totalAdsWatched >= dailyLimit) { showWarningPopup(); return; }
             
-            btn.innerHTML = "Checking...";
+            // 2. Button Loading State
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Loading Ad...";
             btn.style.opacity = "0.7";
             btn.disabled = true; 
-            setTimeout(() => {
-                totalAdsWatched++;
-                currentBalance += rewardPerAd;
-                updateUI();
-                
-                // Special Effects
-                if (totalAdsWatched === 10) runAnimation('var(--col-green)', 'full');
-                if (totalAdsWatched === 20) runAnimation('var(--col-yellow)', 'gap-fill');
-                if (totalAdsWatched === 30) runAnimation('var(--col-red)', 'full');
 
-                showNotification();
-                btn.innerHTML = "WATCH";
+            // 3. Call The Monetag SDK Function
+            if (typeof show_10697065 === 'function') {
+                show_10697065().then(() => {
+                    // --- SUCCESS: User watched the ad ---
+                    totalAdsWatched++;
+                    currentBalance += rewardPerAd;
+                    updateUI();
+                    
+                    // Trigger Ring Animations
+                    if (totalAdsWatched === 10) runAnimation('var(--col-green)', 'full');
+                    if (totalAdsWatched === 20) runAnimation('var(--col-yellow)', 'gap-fill');
+                    if (totalAdsWatched === 30) runAnimation('var(--col-red)', 'full');
+
+                    showNotification(); // Show Toast
+                    
+                    // Reset Button
+                    btn.innerHTML = originalText;
+                    btn.style.opacity = "1";
+                    btn.disabled = false;
+                }).catch((e) => {
+                    // --- ERROR: Ad failed to load or close ---
+                    console.error(e);
+                    alert("Ad failed to load. Please try again.");
+                    btn.innerHTML = originalText;
+                    btn.style.opacity = "1";
+                    btn.disabled = false;
+                });
+            } else {
+                // If SDK isn't ready
+                alert("Ad system is loading... please wait 5 seconds.");
+                btn.innerHTML = originalText;
                 btn.style.opacity = "1";
                 btn.disabled = false;
-            }, 2000);
+            }
         }
 
         function showNotification() {
